@@ -22,6 +22,17 @@ const loadHomePage = async (req, res) => {
             res.render('home');
         }
 
+
+
+
+
+
+
+
+
+
+        
+
     } catch (error) {
         console.error('Home page not found:', error);
         res.status(500).send('Server error');
@@ -118,7 +129,7 @@ async function resetPasswordOtp(email, otp) {
         });
 
         
-        console.log(`Your otp is ${otp}`)
+        console.log(`Your otp is ${otp}`);
         return info.accepted.length > 0;
         
     } catch (error) {

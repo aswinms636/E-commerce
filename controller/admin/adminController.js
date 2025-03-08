@@ -96,6 +96,15 @@ const unblockUser = async (req, res) => {
 };
 
 
+const pageNotFound= async (req,res)=>{
+  try {
+      res.render('page-404')
+  } catch (error) {
+      res.redirect('/pageNotFound')
+  }
+}
+
+
 
   
 
@@ -106,5 +115,7 @@ module.exports={
     blockUser,
     unblockUser,
     adminLogin,
-    logout
+    logout,
+    pageNotFound
+    
 }

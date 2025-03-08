@@ -6,7 +6,7 @@ const custermerInfo = async (req, res) => {
         let page = parseInt(req.query.page) || 1;
         const limit = 3;
 
-        // Fetch users from the database
+       
         const userData = await User.find({
             isAdmin: false,
             $or: [
@@ -18,7 +18,7 @@ const custermerInfo = async (req, res) => {
         .skip((page - 1) * limit)
         .exec();
 
-        // Get total count for pagination
+        
         const count = await User.countDocuments({
             isAdmin: false,
             $or: [
@@ -27,9 +27,9 @@ const custermerInfo = async (req, res) => {
             ],
         });
 
-        // Pass the required data to the EJS template
+       
         res.render('customers', {
-            data: userData, // Fix: Passing userData as "data"
+            data: userData,
             totalPages: Math.ceil(count / limit),
             currentPage: page
         });

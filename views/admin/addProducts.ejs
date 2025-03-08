@@ -1,0 +1,279 @@
+<%- include("../../views/partials/admin/header") %>
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs"></script>
+</head>
+
+<style>
+    .error-message {
+        color: red;
+    }
+
+    .thumbnails-container {
+        display: flex;
+        overflow-x: auto;
+    }
+
+    .thumbnail {
+        margin-right: 10px;
+    }
+
+    .image-cropper {
+        display: none;
+        width: 300px;
+        height: 200px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        position: relative;
+    }
+
+    .image-cropper img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .save-button {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+</style>
+
+<section class="content-main">
+    <div class="row">
+        <div class="col-9">
+            <div class="content-header">
+                <h2 class="content-title">Add New Product</h2>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" action="/admin/addProducts" enctype="multipart/form-data" onsubmit="return validateForm()">
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Product Name</label>
+                            <input type="text" placeholder="Type here" name="productName" class="form-control border" id="product_name">
+                            <div id="productName-error" class="error-message"></div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Brand</label>
+                            <select class="form-select border" name="brand">
+                                <option value="">Select a brand</option>
+                                <option value="Nike">Nike</option>
+                                <option value="Puma">Puma</option>
+                                <option value="Adidas">Adidas</option>
+                                <option value="Crocs">Crocs</option>
+                            </select>
+                            <div id="brand-error" class="error-message"></div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Full description</label>
+                            <textarea placeholder="Type here" id="descriptionid" name="description" class="form-control border" rows="4"></textarea>
+                            <div id="description-error" class="error-message"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4 mb-4">
+                                <label class="form-label">Regular price</label>
+                                <input placeholder="$" name="regularPrice" type="text" class="form-control border">
+                                <div id="regularPrice-error" class="error-message"></div>
+                            </div>
+                            <div class="col-lg-4 mb-4">
+                                <label class="form-label">Sale price</label>
+                                <input placeholder="$" name="salePrice" type="text" class="form-control border">
+                                <div id="salePrice-error" class="error-message"></div>
+                            </div>
+                            <div class="col-lg-4 mb-4">
+                                <label class="form-label">Quantity</label>
+                                <input name="quantity" type="text" class="form-control border">
+                                <div id="quantity-error" class="error-message"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Color</label>
+                            <input name="color" type="text" class="form-control border">
+                            <div id="color-error" class="error-message"></div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Category</label>
+                            <select class="form-select border" name="category">
+                                <option value="Formal">Formal</option>
+                                <option value="Fashion">Fashion</option>
+                                <option value="Boots">Boots</option>
+                            </select>
+                            <div id="category-error" class="error-message"></div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Choose images</h4>
+                            </div>
+                            <div class="border row">
+                                <div id="addedImagesContainer" class="thumbnails-container"></div>
+                            </div>
+
+                            <!-- Image Upload & Cropper UI -->
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <input class="form-control" type="file" name="images" id="input1" accept="image/png, image/jpeg, image/jpg"
+                                           onchange="viewImage(event, 1)">
+                                    <div class="image-cropper" id="cropperContainer1">
+                                        <img src="" id="croppedImg1">
+                                        <button type="button" id="saveButton1" class="btn btn-sm btn-primary save-button">Save</button>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <input class="form-control" type="file" name="images" id="input2" accept="image/png, image/jpeg, image/jpg"
+                                           onchange="viewImage(event, 2)">
+                                    <div class="image-cropper" id="cropperContainer2">
+                                        <img src="" id="croppedImg2">
+                                        <button type="button" id="saveButton2" class="btn btn-sm btn-primary save-button">Save</button>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <input class="form-control" type="file" name="images" id="input3" accept="image/png, image/jpeg, image/jpg"
+                                           onchange="viewImage(event, 3)">
+                                    <div class="image-cropper" id="cropperContainer3">
+                                        <img src="" id="croppedImg3">
+                                        <button type="button" id="saveButton3" class="btn btn-sm btn-primary save-button">Save</button>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <input class="form-control" type="file" name="images" id="input4" accept="image/png, image/jpeg, image/jpg"
+                                           onchange="viewImage(event, 4)">
+                                    <div class="image-cropper" id="cropperContainer4">
+                                        <img src="" id="croppedImg4">
+                                        <button type="button" id="saveButton4" class="btn btn-sm btn-primary save-button">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-md rounded font-sm hover-up" type="submit">Publish</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+
+function validateAndSubmit() {
+        if (validateForm()) {
+            document.forms[0].submit();
+        }
+    }
+
+    function viewImage(event, num) {
+        let input = event.target;
+        let img = document.getElementById(`croppedImg${num}`);
+        let cropperContainer = document.getElementById(`cropperContainer${num}`);
+        let saveButton = document.getElementById(`saveButton${num}`);
+
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            img.src = e.target.result;
+            cropperContainer.style.display = "block";
+
+            let cropper = new Cropper(img, {
+                aspectRatio: 1,
+                viewMode: 1
+            });
+
+            saveButton.onclick = function () {
+                let canvas = cropper.getCroppedCanvas();
+                img.src = canvas.toDataURL();
+            };
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+
+
+
+
+
+    
+    function validateForm() {
+        clearErrorMessages();
+        const name = document.getElementsByName('productName')[0].value;
+        const description = document.getElementById('descriptionid').value;
+        const brand = document.getElementsByName('brand')[0].value;
+        const price = document.getElementsByName('regularPrice')[0].value;
+        const saleprice = document.getElementsByName('salePrice')[0].value;
+        const color = document.getElementsByName('color')[0].value;
+        const category = document.getElementsByName('category')[0].value;
+        const images = document.getElementById('input1');
+        const quantity = document.getElementsByName('quantity')[0].value;
+
+        let isValid = true;
+
+        if (name.trim() === "") {
+            displayErrorMessage('productName-error', 'Please enter a product name.');
+            isValid = false;
+        } else if (!/^[a-zA-Z\s]+$/.test(name.trim())) {
+            displayErrorMessage('productName-error', 'Product name should contain only alphabetic characters.');
+            isValid = false;
+        }
+
+        if (description.trim() === "") {
+            displayErrorMessage('description-error', 'Please enter a product description.');
+            isValid = false;
+        } else if (!/^[a-zA-Z\s]+$/.test(description.trim())) {
+            displayErrorMessage('description-error', 'Product description should contain only alphabetic characters.');
+            isValid = false;
+        }
+
+        if (parseInt(quantity) < 0 || isNaN(quantity)) {
+            displayErrorMessage('quantity-error', 'Please enter a valid non-negative quantity.');
+            isValid = false;
+        }
+
+        if (!/^\d+(\.\d{1,2})?$/.test(price) || parseFloat(price) < 0) {
+            displayErrorMessage('regularPrice-error', 'Please enter a valid non-negative price.');
+            isValid = false;
+        }
+
+        if (!/^\d+(\.\d{1,2})?$/.test(saleprice) || parseFloat(saleprice) < 0) {
+            displayErrorMessage('salePrice-error', 'Please enter a valid non-negative price.');
+            isValid = false;
+        }
+
+        if (parseFloat(price) <= parseFloat(saleprice)) {
+            displayErrorMessage('regularPrice-error', 'Regular price must be greater than sale price.');
+            isValid = false;
+        }
+
+        if (color.trim() === "") {
+            displayErrorMessage('color-error', 'Please enter a color.');
+            isValid = false;
+        }
+
+        if (images.files.length === 0) {
+            displayErrorMessage("images-error", 'Please select an image.');
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    function displayErrorMessage(elementId, message) {
+        var errorElement = document.getElementById(elementId);
+        errorElement.innerText = message;
+        errorElement.style.display = "block";
+    }
+
+    function clearErrorMessages() {
+        const errorElements = document.getElementsByClassName('error-message');
+        Array.from(errorElements).forEach(element => {
+            element.innerText = '';
+            element.style.display = 'none';
+        });
+    }
+
+</script>
+<%- include("../../views/partials/admin/footer") %>
