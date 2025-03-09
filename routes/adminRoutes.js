@@ -32,39 +32,30 @@ router.post('/editCategory/:id',categoryController.editCategory)
 
 
 
-
-
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public/Uploads/'); // Define the directory where files will be stored
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
-});
-
-const uploads = multer({
-    storage: storage,
    
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB file size limit
-    fileFilter: function (req, file, cb) {
-        const fileTypes = /jpeg|jpg|png|gif/;
-        const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
-        const mimeType = fileTypes.test(file.mimetype);
-        if (extname && mimeType) {
-            return cb(null, true);
-        } else {
-            cb(new Error('Only images are allowed!'));
-        }
-    }
     
-});
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); 
+    },
+    filename: (req, file, cb) => {
+        const namePrefix = Date.now();
+        const ext = path.extname(file.originalname)
+        const newName = namePrefix + ext; 
+        cb(null, newName);
+    }
+ });
+
+ const uploads = multer({ storage });
+
+
+
 
 router.get('/addProducts',productController.loadAddProduct)
 router.post('/addProducts',uploads.array('images',4),productController.addProducts)
 
 
-
+ 
 
 
 
